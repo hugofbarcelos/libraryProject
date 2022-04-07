@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +10,7 @@ import { Component } from '@angular/core';
       <a [routerLink]="['/products']">Products</a>
       <a [routerLink]="['/contact']">Contact</a>
     </nav>
+    <router-outlet></router-outlet>
   `,
   styles: [`
     h1{
@@ -18,7 +20,7 @@ import { Component } from '@angular/core';
     nav {
       display: flex;
       justify-content: space-around;
-      text-decoration: none;
+
       padding: 14px;
       font-size: 20px;
     }
@@ -27,14 +29,24 @@ import { Component } from '@angular/core';
       border-radius: 20px;
       color: black;
       background-color: cyan;
+      text-decoration: none;
       font-size: 1.1em;
       border: 0;
       cursor: pointer;
       margin: 1em;
       text-align: center;
     }
+
   `]
 })
 export class AppComponent {
-  title = 'library';
+
+  constructor(private router: Router){
+
+  }
+
+  navigateToUrl(){
+    this.router.navigate(['/products']);
+  }
+
 }
