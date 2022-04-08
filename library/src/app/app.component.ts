@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   template: `
-    <h1>My Library</h1>
+    <h1>Welcome</h1>
     <nav>
       <a [routerLink]="['/']">Home</a>
       <a [routerLink]="['/products']">Products</a>
@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
     nav {
       display: flex;
       justify-content: space-around;
-
+      flex-wrap:wrap;
       padding: 14px;
       font-size: 20px;
     }
