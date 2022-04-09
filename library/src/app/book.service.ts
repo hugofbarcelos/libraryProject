@@ -10,9 +10,11 @@ export class BookService {
   getBooks(): Book[] {
     return books.map(b => new Book(b.id, b.title, b.alreadyRead, b.imageUrl, b.imageUrlGr, b.description, b.author));
   }
-/*   getBookById(bookId: number): Book {
+
+  getBookById(bookId: number): Book | any{
     return books.find(b => b.id === bookId);
-  } */
+  } 
+
 }
 
 const books = [
