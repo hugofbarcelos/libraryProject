@@ -1,0 +1,34 @@
+section {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.alreadyRead {
+  display: flex;     
+  padding: 3px 7px;
+  border-radius: 5px;
+  color: white;
+  background-color: gray;
+  text-decoration: none;
+  font-size: 0.5em;
+  border: 0;
+  cursor: pointer;
+  margin: 1em;
+  text-align: center;
+}
+button {
+  display: flex;
+  justify-content: center;
+  padding: 3px 7px;
+  border-radius: 5px;
+  color: white;
+  background-color: gray;
+  text-decoration: none;
+  font-size: 0.5em;
+  border: 0;
+  cursor: pointer;
+  margin: 1em;
+  text-align: center;
+
+}

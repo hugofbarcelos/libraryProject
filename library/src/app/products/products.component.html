@@ -1,1 +1,17 @@
-<p>products works!</p>
+<section>
+    <button (click)="filtered()">Read</button>
+    <input type="text" id="search-text" placeholder="Search book by name"/>
+    <button (click)="unfiltered()">!Read</button>
+  </section>
+  <section>
+
+    <article ngClass="boo" *ngFor="let b of book">
+      <h1>{{b.title}}</h1>
+      <p>{{b.author}}</p>
+      <img src="assets/livros/{{b.imageUrl}}">
+      <h1> Already read:</h1>
+      <button ngClass="alreadyRead">{{b.alreadyRead ? 'Yes' : 'No'}}</button>
+      <button (click)="deleteItem(b.id)">Delete</button>
+    </article>
+
+  </section>
