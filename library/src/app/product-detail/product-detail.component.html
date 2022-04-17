@@ -1,0 +1,9 @@
+<section class="detail" *ngFor="let test of book | async">
+    <article >
+      <h1>{{test.title}}</h1>
+      <h2>{{test.author}}</h2>
+      <img src="assets/livros/{{test.imageUrlGr}}" />
+  
+    </article >
+    <p>{{test.description}}</p>
+  </section>
