@@ -1,17 +1,30 @@
 <section>
-    <button (click)="filtered()">Read</button>
-    <input type="text" id="search-text" placeholder="Search book by name"/>
-    <button (click)="unfiltered()">!Read</button>
+  <article>
+    <input type="radio" name="rad" id="all" (change)="handleFilterBook()" #all [defaultChecked]="true"/>
+    <label for="all">Todos</label>
+  </article>
+  <article>
+    <input type="radio" name="rad" id="read" (change)="handleFilterBook()" #read />
+    <label for="read">Lidos</label>
+  </article>
+  <article>
+    <input type="radio" name="rad" id="notRead" (change)="handleFilterBook()" #notRead />
+    <label for="notRead">Não Lidos</label>
+  </article>
+     <article>
+      <label for="searchbar">Search by Title: </label>
+      <input type="text" id="searchbar" #searchbar name="search" placeholder="Insert Title" [formControl]="searchInput"/>
+    </article>
   </section>
   <section>
 
-    <article ngClass="boo" *ngFor="let b of book">
+    <article ngClass="book" *ngFor="let b of book$ | async">
       <h1>{{b.title}}</h1>
       <p>{{b.author}}</p>
-      <img src="assets/livros/{{b.imageUrl}}">
+      <img [routerLink]="['/product', b.id]" src="assets/livros/{{b.imageUrl}}">
       <h1> Already read:</h1>
       <button ngClass="alreadyRead">{{b.alreadyRead ? 'Yes' : 'No'}}</button>
-      <button (click)="deleteItem(b.id)">Delete</button>
+      <button (click)="handleDelete(b.id)">Delete</button>
     </article>
 
   </section>

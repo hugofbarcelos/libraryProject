@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { interval, Observable } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { debounceTime, interval, Observable, of, switchMap } from 'rxjs';
 import { Book } from '../book.model';
 import { BookService } from '../book.service';
 
@@ -11,27 +12,51 @@ import { BookService } from '../book.service';
 })
 export class ProductsComponent implements OnInit {
 
-  book!: Book[];
+
   book$!: Observable<Book[]>;
   bookServices!: BookService;
-  
+  searchInput: FormControl = new FormControl('');
+
   constructor(private bookService : BookService) {
-      this.bookServices = bookService;
+      this.book$ = bookService.getBooks();
   }
 
   ngOnInit(): void {
-    this.book = this.bookServices.getBooks();
+    this.searchInput.valueChanges.pipe(
+      debounceTime(300),
+      switchMap(a => a.length>0 ? this.bookService.searchBook(a, this.book$): this.handleFilterBook())
+    ).subscribe({
+      next: resp => this.book$ = of(resp),
+      error: err => console.log('erro')
+  } );
   }
 
-  deleteItem(id: number){
-    this.book = this.bookServices.getBooks().filter(b => b.id !== id);
+  @ViewChild('read') read!: ElementRef;
+  @ViewChild('notRead') notRead!: ElementRef;
+  @ViewChild('all') all!: ElementRef;
+  @ViewChild('searchbar') searchbar!: ElementRef;
+  handleFilterBook(): Observable<Book[]>{
+
+    if (this.read.nativeElement.checked){
+      this.searchInput.setValue("")
+      this.book$ = this.bookService.filterBook(true);
+
+    }else if (this.notRead.nativeElement.checked){
+      this.searchInput.setValue("")
+      this.book$ = this.bookService.filterBook(false);
+
+    }else{
+      this.searchInput.setValue("")
+      this.book$ = this.bookService.getBooks();
+
+    }
+
+    return this.book$;
   }
 
-  filtered(){
-    this.book = this.bookServices.getBooks().filter(({ alreadyRead }) => alreadyRead == true);
+
+  handleDelete(id: number) : any {
+    this.bookService.deleteBook(Number(id));
   }
 
-  unfiltered(){
-    this.book = this.bookService.getBooks().filter(b => b.alreadyRead !== true);
-  }
 }

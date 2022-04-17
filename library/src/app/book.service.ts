@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { Book } from '../app/book.model';
+import { StoreService } from './store.service';
 
 
 @Injectable({
@@ -7,69 +9,29 @@ import { Book } from '../app/book.model';
 })
 export class BookService {
 
-  getBooks(): Book[] {
-    return books.map(b => new Book(b.id, b.title, b.alreadyRead, b.imageUrl, b.imageUrlGr, b.description, b.author));
+  constructor(private state: StoreService){
+
   }
 
-  getBookById(bookId: number): Book | any{
-    return books.find(b => b.id === bookId);
+  getBooks(): Observable<Book[]> {
+    return this.state.getState();
+  }
+
+  getBookById(bookId: number): Observable<Book[]>{
+    return this.getBooks().pipe(map(res =>res.filter( b => b.id === bookId)));
   } 
 
-}
-
-const books = [
-  {
-    id: 0,
-    title: "Angular com Typescript",
-    author: "Yakov Fain",
-    alreadyRead: true,
-    imageUrl: "angular.jpg",
-    imageUrlGr: "angularGr.png",
-    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium."
-  },
-  {
-    id: 1,
-    title: "Blockchain com JS",
-    author: "Bina Ramahurty",
-    alreadyRead: false,
-    imageUrl: "blockchain.jpg",
-    imageUrlGr: "blockchainGr.png",
-    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium."
-  },
-  {
-    id: 2,
-    title: "DeepLearning com JS",
-    author: "Multiple Authors",
-    alreadyRead: true,
-    imageUrl: "deeplearning.jpg",
-    imageUrlGr: "deeplearningGr.png",
-    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium."
-  },
-  {
-    id: 3,
-    title: "Joy of Javascript",
-    author: "Luis Atencio",
-    alreadyRead: true,
-    imageUrl: "joj.jpg",
-    imageUrlGr: "jojGr.png",
-    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium."
-  },
-  {
-    id: 4,
-    title: "React Hooks",
-    author: "John Larsen",
-    alreadyRead: false,
-    imageUrl: "reacthooks.jpg",
-    imageUrlGr: "reacthooksGr.png",
-    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium."
-  },
-  {
-    id: 5,
-    title: "Typescript",
-    author: "Yakov Fain",
-    alreadyRead: false,
-    imageUrl: "typescript.png",
-    imageUrlGr: "typescriptGr.png",
-    description: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed vitae inventore nostrum nobis! Quia, iure totam quaerat expedita laboriosam quo omnis culpa vero provident! Quis pariatur accusantium nesciunt recusandae praesentium."
+  deleteBook(id:number){
+    let newBooks = this.getBooks().pipe(map(res =>res.filter( b => b.id !== id)));
+    return newBooks.subscribe(a => this.state.updateState(a));
   }
-];
+
+  filterBook(alreadyRead: boolean){
+    return this.getBooks().pipe(map(res =>res.filter( b => b.alreadyRead === alreadyRead)));
+  }
+
+  searchBook(input: string, fbook: Observable<Book[]>){
+    return fbook.pipe(map(res =>res.filter( b => b.title.toLowerCase().includes(input.toLowerCase()) )));
+  }
+
+}

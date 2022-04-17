@@ -45,8 +45,6 @@ export class AppComponent {
 
   }
 
-  navigateToUrl(){
-    this.router.navigate(['/products']);
-  }
+
 
 }
